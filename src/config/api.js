@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://hacker-news-clone-1.herokuapp.com/api';
+export const BASE_URL = 'https://hacker-news-clone-1.herokuapp.com/api';
 
 
 // this variable name shoud end in _URL
