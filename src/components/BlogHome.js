@@ -10,11 +10,14 @@ import Sidebar from './Sidebar';
 import { fetchData } from '../modules/util_query';
 import { handleApiError } from '../modules/responseHandlers';
 import { initializeUrlWithFilters, injectArguments } from '../modules';
-import { FETCH_ITEMS } from '../config/api';
+import { FETCH_ITEMS, DELETE_ITEM } from '../config/api';
 import { useQuery } from 'react-query';
 import Loader from './Loader';
 import Header from './Header';
 import { sections } from './sections';
+import { useMutation, useQueryClient } from 'react-query';
+import { postData, deleteData } from '../modules/util_query';
+import { toast } from 'react-hot-toast';
   
   const mainFeaturedPost = {
     title: 'Hacker News Blog',
@@ -81,6 +84,17 @@ import { sections } from './sections';
     const [lastPage, setLastPage] = React.useState(1);
     const [urlWithFilters, setUrlWithFilters] = React.useState('');
     const [filters, setFilters] = React.useState({});
+    const queryClient = useQueryClient();
+    const mutation = useMutation(deleteData,{
+      onSuccess: (response) => {
+        toast.success("deleted successfully");
+        queryClient.invalidateQueries("items");
+      },
+      onError: (error, variables, context) => {
+        handleApiError(error);
+      }
+    }
+      );
     let payload_data = {};
     
     const result = useQuery(
@@ -139,6 +153,17 @@ import { sections } from './sections';
       // once the url string changes, the useQuery hook will fire again
       setUrlWithFilters(urlAndFilter);
     };
+
+    const deleteItem = (id) => {
+
+      mutation.mutate({
+        url: injectArguments(DELETE_ITEM, {id}),
+        payload_data: {
+          id
+        },
+    })
+
+    };
   
     const { isLoading, isError, data, error, isFetching } = result;
   
@@ -154,7 +179,7 @@ import { sections } from './sections';
           filters={filters}
           handleSearch={handleSearch}
         />
-        { isLoading ? 
+        { (isLoading || mutation?.isLoading) ? 
           <Grid container spacing={4} sx={{ minWidth: 700}}>
             <Loader />
           </Grid>
@@ -173,6 +198,7 @@ import { sections } from './sections';
                   page={page}
                   lastPage={lastPage}
                   handlePageChange={handlePageChange}
+                  deleteItem={deleteItem}
                   />
                 <Sidebar
                   title={sidebar.title}

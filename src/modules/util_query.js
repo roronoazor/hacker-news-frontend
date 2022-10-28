@@ -22,3 +22,15 @@ export const fetchData = async ({queryKey}) => {
   
     return response_data;
   }
+
+
+  export const deleteData = async (data) => {
+    // a hook that fetches data
+    const {payload_data, url} = data;
+      
+     const config = {};
+
+    let response_data = await axios.delete(url, payload_data, config);
+  
+    return response_data;
+  }

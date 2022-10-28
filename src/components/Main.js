@@ -14,6 +14,7 @@ function Main(props) {
     page = 1, 
     lastPage=1,
     handlePageChange,
+    deleteItem
    } = props;
 
   return (
@@ -33,12 +34,15 @@ function Main(props) {
       <Divider />
       {posts.map((post) => (
         <MediaCard 
+          postId={post?.id}
           title={post?.title}
           by={post?.by}
           url={post?.url}
           text={post?.text}
           score={post?.score}
           type={post?.type}
+          reference_id={post?.reference_id}
+          deleteItem={deleteItem}
         />
       ))}
       <Box 

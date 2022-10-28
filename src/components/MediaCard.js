@@ -9,12 +9,15 @@ import Link from '@mui/material/Link';
 
 export default function MediaCard(
   {
+    postId,
     type,
     by,
     text,
     url,
     title,
-    score
+    score,
+    deleteItem,
+    reference_id
   }
 ) {
   return (
@@ -32,7 +35,9 @@ export default function MediaCard(
         <Typography variant="body2" color="text.secondary">
           {text}
         </Typography>
-
+        <Typography variant="subtitle2" color="text.secondary">
+          Source: {(reference_id == null) ? 'Local' : 'Hacker News'}
+        </Typography>
         { 
           ((url != '') && (url != null)) && (
             <Link href={url} underline="hover" el="noreferrer" target="_blank">
@@ -44,6 +49,19 @@ export default function MediaCard(
       <CardActions>
         <Button size="small">{`By: ${by}`}</Button>
         <Button variant="outlined" size="small">{`Type: ${type}`}</Button>
+      
+          {(reference_id == null) && 
+            <Button
+             variant="outlined"
+             size="small"
+             color='error'
+             onClick={() => deleteItem(postId)}
+            >
+              Delete
+            </Button>
+          }
+        
+        
       </CardActions>
     </Card>
   );
